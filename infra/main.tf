@@ -1,3 +1,7 @@
+provider "azurerm" {
+  features {}
+}
+
 resource "azurerm_resource_group" "rg_poc_iac" {
   name     = "RG-poc-iac"
   location = var.location
