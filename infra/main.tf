@@ -13,7 +13,7 @@ resource "azurerm_kubernetes_cluster" "aks_ck_poc_iac" {
     name                = "pool1"
     node_count          = 2
     vm_size             = "Standard_DS2_v2"
-    enable_auto_scaling = true
+    enable_auto_scaling = false
     min_count           = 2
     max_count           = 5
   }
