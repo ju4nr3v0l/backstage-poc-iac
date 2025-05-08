@@ -8,6 +8,7 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    environment: poc
     steps:
       - uses: actions/checkout@v3
       - name: Setup Terraform
