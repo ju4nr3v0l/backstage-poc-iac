@@ -43,15 +43,20 @@ resource "azurerm_user_assigned_identity" "karpenter" {
   }
 }
 resource "azurerm_role_assignment" "karpenter_vm_contributor" {
-  scope                = azurerm_resource_group.rg.name != "" ? azurerm_resource_group.rg[0].id : data.azurerm_resource_group.existing_rg[0].id
+  scope                = var.resource_group_name
   role_definition_name = "Virtual Machine Contributor"
   principal_id         = azurerm_user_assigned_identity.karpenter.principal_id
 }
+
+# registrar aplicacion
+resource "azuread_application_registration" "poc-iac-aks" {
+  display_name = "POC-iac-aks"
+}
 # Crear la credencial federada
 resource "azuread_application_federated_identity_credential" "karpenter" {
-  application_object_id = data.azuread_user_assigned_identity.karpenter.principal_id
+  application_id = azuread_application_registration.poc-iac-aks.id
   issuer                = azurerm_kubernetes_cluster.aks.oidc_issuer_url
   subject               = "system:serviceaccount:karpenter:karpenter"
   audiences             = ["api://AzureADTokenExchange"]
-  display_name          = ""
+  display_name          = "POC-iac-aks-credential"
 }
