@@ -43,7 +43,7 @@ resource "azurerm_user_assigned_identity" "karpenter" {
   }
 }
 resource "azurerm_role_assignment" "karpenter_vm_contributor" {
-  scope                = var.resource_group_name
+  scope                = azurerm_user_assigned_identity.karpenter.principal_id
   role_definition_name = "Virtual Machine Contributor"
   principal_id         = azurerm_user_assigned_identity.karpenter.principal_id
 }
