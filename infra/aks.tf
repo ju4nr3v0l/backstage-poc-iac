@@ -8,7 +8,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
 
   identity {
-    type = "SystemAssigned, UserAssigned"
+    type = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.karpenter.id]
   }
 
