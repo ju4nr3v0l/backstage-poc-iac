@@ -1,0 +1,20 @@
+resource "helm_release" "nginx_ingress" {
+  name       = "nginx-ingress"
+  repository = "https://kubernetes.github.io/ingress-nginx"
+  chart      = "ingress-nginx"
+  version    = "5.7.0"
+
+  namespace  = "ingress-basic"
+  create_namespace = true
+
+  values = [
+    yamlencode({
+      controller = {
+        replicaCount = 2
+        service = {
+          type = "LoadBalancer"
+        }
+      }
+    })
+  ]
+}

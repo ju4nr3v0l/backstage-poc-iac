@@ -1,34 +1,41 @@
-name: Terraform CI/CD
+name: Terraform AKS Deployment
 
 on:
   push:
-    paths:
-      - 'infra/**'
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
   terraform:
+    name: 'Terraform Plan & Apply'
     runs-on: ubuntu-latest
-    environment: poc
+    env:
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_CLIENT_ID:       ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET:   ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_TENANT_ID:       ${{ secrets.AZURE_TENANT_ID }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.5.0
-      - name: Terraform Init & Apply
-        run: |
-          cd infra
-          cat > terraform.tfvars <<EOF
-          subscription_id = "$ARM_SUBSCRIPTION_ID"
-          client_id       = "$ARM_CLIENT_ID"
-          client_secret   = "$ARM_CLIENT_SECRET"
-          tenant_id       = "$ARM_TENANT_ID"
-          EOF
-          terraform init
-          terraform apply -auto-approve
-        env:
-          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Terraform Init
+        working-directory: terraform
+        run: terraform init -input=false
+
+      - name: Terraform Validate
+        working-directory: terraform
+        run: terraform validate
+
+      - name: Terraform Plan
+        id: plan
+        working-directory: terraform
+        run: terraform plan -out=tfplan -input=false
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        working-directory: terraform
+        run: terraform apply -input=false tfplan
