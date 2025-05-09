@@ -45,7 +45,7 @@ resource "azurerm_user_assigned_identity" "karpenter" {
 
 resource "azurerm_federated_identity_credential" "karpenter_federated_identity" {  
   name                = "KARPENTER_FID"  
-  resource_group_name = azurerm_resource_group.karpenter_rg.name  
+  resource_group_name = var.resource_group_name 
   audience            = ["api://AzureADTokenExchange"]  
   issuer              = azurerm_kubernetes_cluster.aks.oidc_issuer_url  
   parent_id           = azurerm_user_assigned_identity.karpenter.id  
