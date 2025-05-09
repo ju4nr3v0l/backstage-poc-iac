@@ -24,4 +24,6 @@ resource "helm_release" "argocd" {
     value = "argocd-server-pip"
   }
 
+  timeout = 1200
+
 }
