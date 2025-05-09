@@ -21,8 +21,11 @@ resource "azurerm_subnet" "aks" {
     service_delegation {
       name = "Microsoft.ContainerService/managedClusters"
       actions = [
-        "Microsoft.Network/virtualNetworks/subnets/action",
+        "Microsoft.Network/virtualNetworks/subnets/join/action",
+        "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action",
+        "Microsoft.Network/virtualNetworks/subnets/unprepareNetworkPolicies/action",
       ]
     }
   }
 }
+
