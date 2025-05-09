@@ -32,14 +32,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 }
 
-resource "azurerm_resource_group" "karpenter_rg" {  
-  name     = "karpenter-rg"  
-  location = var.location  
-}  
 # karpenter identity
 resource "azurerm_user_assigned_identity" "karpenter" {
   name                = "karpenter-identity"
-  resource_group_name = azurerm_resource_group.karpenter_rg.name  
+  resource_group_name = var.resource_group_name
   location            = azurerm_resource_group.karpenter_rg.location
 
   tags = {
@@ -50,7 +46,7 @@ resource "azurerm_user_assigned_identity" "karpenter" {
 
 resource "azurerm_federated_identity_credential" "karpenter_federated_identity" {  
   name                = "KARPENTER_FID"  
-  resource_group_name = azurerm_resource_group.karpenter_rg.name
+  resource_group_name = var.resource_group_name
   audience            = ["api://AzureADTokenExchange"]  
   issuer              = azurerm_kubernetes_cluster.aks.oidc_issuer_url  
   parent_id           = azurerm_user_assigned_identity.karpenter.id  
