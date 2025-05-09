@@ -23,19 +23,19 @@ jobs:
         uses: hashicorp/setup-terraform@v2
 
       - name: Terraform Init
-        working-directory: terraform
+        working-directory: infra
         run: terraform init -input=false
 
       - name: Terraform Validate
-        working-directory: terraform
+        working-directory: infra
         run: terraform validate
 
       - name: Terraform Plan
         id: plan
-        working-directory: terraform
+        working-directory: infra
         run: terraform plan -out=tfplan -input=false
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
-        working-directory: terraform
+        working-directory: infra
         run: terraform apply -input=false tfplan
