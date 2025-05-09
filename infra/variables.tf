@@ -42,5 +42,5 @@ variable "agent_count" {
 variable "agent_vm_size" {
   description = "Tamaño de VM para los nodos"
   type        = string
-  default     = "Standard_DS2_v2"
+  default     = "standard_a2_v2"
 }
