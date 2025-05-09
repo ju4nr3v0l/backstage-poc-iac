@@ -10,6 +10,14 @@ terraform {
       version = ">= 2.0"
     }
   }
+  
+  backend "azurerm" {
+    resource_group_name  = "terraform-state-rg"
+    storage_account_name = "tfstateaccount"
+    container_name       = "tfstate"
+    key                  = "terraform.tfstate"
+    # Optional: use_azuread_auth = true  # Uncomment if you want to use Azure AD authentication
+  }
 }
 
 provider "azurerm" {
