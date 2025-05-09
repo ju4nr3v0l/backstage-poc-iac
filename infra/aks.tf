@@ -23,9 +23,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     dns_service_ip = "10.0.2.10"
   }
 
-  identity {
-    type = "SystemAssigned"
-  }
+
 
   tags = {
     environment = "poc"
