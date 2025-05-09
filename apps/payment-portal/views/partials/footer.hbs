@@ -1,0 +1,15 @@
+<footer class="footer bg-light text-center py-3 mt-auto">
+  <div class="container">
+    <span class="text-muted">&copy;
+      {{#if (eq (date "YYYY") "2024")}}2024{{else}}2024 - {{date "YYYY"}}{{/if}}
+      MyPaymentApp. Todos los derechos reservados.</span>
+  </div>
+</footer>
+
+<script>
+  // Helper para obtener el año actual en Handlebars (si no se pasa desde el
+  backend)
+  {{! Handlebars.registerHelper('date', function(format) {
+        return new Date().getFullYear(); // Simple example, you might use a library like moment.js for complex formatting
+    }); }}
+</script>

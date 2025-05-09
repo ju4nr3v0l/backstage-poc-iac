@@ -1,0 +1,52 @@
+<div class="container mt-5">
+    <h2 class="mb-4">{{title}}</h2>
+
+    {{#if payments.length}}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Transaction ID</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Currency</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Card Holder</th>
+                        <th scope="col">Card Number</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each payments}}
+                        <tr class="{{#if (eq this.status 'Completed')}}table-success{{else if (eq this.status 'Failed')}}table-danger{{else}}table-warning{{/if}}">
+                            <th scope="row">{{@index}}</th>
+                            <td>{{this.id}}</td>
+                            <td>{{this.transactionId}}</td>
+                            <td>{{formatCurrency this.amount}}</td>
+                            <td>{{this.currency}}</td>
+                            <td>
+                                <span class="badge {{#if (eq this.status 'Completed')}}badge-success{{else if (eq this.status 'Failed')}}badge-danger{{else}}badge-warning{{/if}}">
+                                    {{this.status}}
+                                </span>
+                            </td>
+                            <td>{{this.cardHolderName}}</td>
+                            <td>{{this.cardNumber}}</td>
+                            <td>{{this.email}}</td>
+                            <td>{{formatDate this.createdAt}}</td>
+                            <td>{{this.reason}}</td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    {{else}}
+        <div class="alert alert-info" role="alert">
+            No payments found yet.
+        </div>
+    {{/if}}
+
+    <a href="/" class="btn btn-primary mt-3">Back to Payment Form</a>
+</div>

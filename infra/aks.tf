@@ -42,21 +42,30 @@ resource "azurerm_user_assigned_identity" "karpenter" {
     owner       = "JuanDavid"
   }
 }
-resource "azurerm_role_assignment" "karpenter_vm_contributor" {
-  scope                = azurerm_user_assigned_identity.karpenter.principal_id
-  role_definition_name = "Virtual Machine Contributor"
-  principal_id         = azurerm_user_assigned_identity.karpenter.principal_id
-}
 
-# registrar aplicacion
-resource "azuread_application_registration" "poc-iac-aks" {
-  display_name = "POC-iac-aks"
-}
-# Crear la credencial federada
-resource "azuread_application_federated_identity_credential" "karpenter" {
-  application_id = azuread_application_registration.poc-iac-aks.id
-  issuer                = azurerm_kubernetes_cluster.aks.oidc_issuer_url
-  subject               = "system:serviceaccount:karpenter:karpenter"
-  audiences             = ["api://AzureADTokenExchange"]
-  display_name          = "POC-iac-aks-credential"
+resource "azurerm_federated_identity_credential" "karpenter_federated_identity" {  
+  name                = "KARPENTER_FID"  
+  resource_group_name = azurerm_resource_group.karpenter_rg.name  
+  audience            = ["api://AzureADTokenExchange"]  
+  issuer              = azurerm_kubernetes_cluster.aks.oidc_issuer_url  
+  parent_id           = azurerm_user_assigned_identity.karpenter_identity.id  
+  subject             = "system:serviceaccount:karpenter:karpenter"  
+} 
+
+resource "azurerm_role_assignment" "vm_contributor" {  
+  scope                = azurerm_kubernetes_cluster.aks.node_resource_group_id  
+  role_definition_name = "Virtual Machine Contributor"  
+  principal_id         = azurerm_user_assigned_identity.karpenter_identity.principal_id  
+}  
+
+resource "azurerm_role_assignment" "network_contributor" {  
+  scope                = azurerm_kubernetes_cluster.aks.node_resource_group_id  
+  role_definition_name = "Network Contributor"  
+  principal_id         = azurerm_user_assigned_identity.karpenter_identity.principal_id  
+}  
+
+resource "azurerm_role_assignment" "managed_identity_operator" {  
+  scope                = azurerm_kubernetes_cluster.aks.node_resource_group_id  
+  role_definition_name = "Managed Identity Operator"  
+  principal_id         = azurerm_user_assigned_identity.karpenter_identity.principal_id  
 }
