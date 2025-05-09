@@ -67,5 +67,5 @@ resource "azurerm_role_assignment" "network_contributor" {
 resource "azurerm_role_assignment" "managed_identity_operator" {  
   scope                = azurerm_kubernetes_cluster.aks.node_resource_group_id  
   role_definition_name = "Managed Identity Operator"  
-  principal_id         = azurerm_user_assigned_identity.karpenter_identity.principal_id  
+  principal_id         = azurerm_user_assigned_identity.karpenter.principal_id  
 }
