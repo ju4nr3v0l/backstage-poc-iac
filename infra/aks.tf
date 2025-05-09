@@ -6,6 +6,12 @@ resource "azurerm_kubernetes_cluster" "aks" {
   oidc_issuer_enabled = true
   workload_identity_enabled = true
 
+
+  identity {
+    type = "SystemAssigned, UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.karpenter.id]
+  }
+
   default_node_pool {
     name            = "agentpool"
     node_count      = var.agent_count
