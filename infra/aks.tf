@@ -48,20 +48,20 @@ resource "azurerm_federated_identity_credential" "karpenter_federated_identity" 
   resource_group_name = azurerm_resource_group.karpenter_rg.name  
   audience            = ["api://AzureADTokenExchange"]  
   issuer              = azurerm_kubernetes_cluster.aks.oidc_issuer_url  
-  parent_id           = azurerm_user_assigned_identity.karpenter_identity.id  
+  parent_id           = azurerm_user_assigned_identity.karpenter.id  
   subject             = "system:serviceaccount:karpenter:karpenter"  
 } 
 
 resource "azurerm_role_assignment" "vm_contributor" {  
   scope                = azurerm_kubernetes_cluster.aks.node_resource_group_id  
   role_definition_name = "Virtual Machine Contributor"  
-  principal_id         = azurerm_user_assigned_identity.karpenter_identity.principal_id  
+  principal_id         = azurerm_user_assigned_identity.karpenter.principal_id  
 }  
 
 resource "azurerm_role_assignment" "network_contributor" {  
   scope                = azurerm_kubernetes_cluster.aks.node_resource_group_id  
   role_definition_name = "Network Contributor"  
-  principal_id         = azurerm_user_assigned_identity.karpenter_identity.principal_id  
+  principal_id         = azurerm_user_assigned_identity.karpenter.principal_id  
 }  
 
 resource "azurerm_role_assignment" "managed_identity_operator" {  
