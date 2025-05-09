@@ -25,14 +25,6 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: Importar RG existente
-        if: steps.check_rg.outputs.exists == 'true'
-        run: |
-          terraform -chdir=terraform init -input=false
-          terraform -chdir=terraform import \
-            azurerm_resource_group.rg \
-            /subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/${{ env.TF_VAR_resource_group_name }}
-
       - name: Terraform Init
         working-directory: infra
         run: terraform init -input=false
