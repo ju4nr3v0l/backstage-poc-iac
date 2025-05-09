@@ -36,7 +36,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
 resource "azurerm_user_assigned_identity" "karpenter" {
   name                = "karpenter-identity"
   resource_group_name = var.resource_group_name
-  location            = azurerm_resource_group.karpenter_rg.location
+  location            = azurerm_resource_group.rg.location
 
   tags = {
     environment = "poc"
