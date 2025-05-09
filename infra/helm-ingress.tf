@@ -1,3 +1,11 @@
+resource "azurerm_public_ip" "nginx_ingress" {
+  name                = "nginx-ingress-pip"
+  resource_group_name = azurerm_kubernetes_cluster.aks.node_resource_group
+  location            = azurerm_kubernetes_cluster.aks.location
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
 resource "helm_release" "nginx_ingress" {
   name       = "nginx-ingress"
   repository = "https://kubernetes.github.io/ingress-nginx"
