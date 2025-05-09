@@ -6,6 +6,5 @@ output "kube_config" {
 
 output "ingress_ip" {
   description = "IP pública del Ingress Controller"
-  # status.0.load_balancer.0.ingress.0.ip según el esquema del provider k8s
-  value       = data.kubernetes_service.nginx-ingress-controller.status[0].load_balancer[0].ingress[0].ip
+  value       = data.azurerm_public_ip.nginx_ingress.ip_address
 }

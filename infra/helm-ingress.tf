@@ -1,10 +1,10 @@
 resource "helm_release" "nginx_ingress" {
-  name       = "nginx-ingress-controller"
+  name       = "nginx-ingress"
   repository = "https://kubernetes.github.io/ingress-nginx"
-  chart      = "nginx-ingress-controller"
+  chart      = "ingress-nginx"
   version    = "5.7.0"
 
-  namespace  = "ingress-basic"
+  namespace        = "ingress-basic"
   create_namespace = true
 
   values = [
@@ -13,6 +13,9 @@ resource "helm_release" "nginx_ingress" {
         replicaCount = 2
         service = {
           type = "LoadBalancer"
+          annotations = {
+            "service.beta.kubernetes.io/azure-pip-name" = "nginx-ingress-pip"
+          }
         }
       }
     })
