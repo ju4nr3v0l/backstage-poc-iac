@@ -457,7 +457,7 @@ spec:
             - name: NETWORK_POLICY
               value: calico
             - name: VNET_SUBNET_ID
-              value: "null"
+              value: 6e583756-87f4-477a-8af7-1a609fcfa590
             - name: NODE_IDENTITIES
               value: /subscriptions/f8e621ae-b178-4f4b-9089-9bddcf072722/resourcegroups/MC_RG-poc-iac_CK-poc-iac_eastus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/CK-poc-iac-agentpool
             - name: ARM_SUBSCRIPTION_ID
