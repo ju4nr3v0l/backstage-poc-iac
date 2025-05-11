@@ -5,6 +5,7 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.17.3
   name: nodeclaims.karpenter.sh
+  namespace : karpenter
 spec:
   group: karpenter.sh
   names:
@@ -397,6 +398,7 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.17.3
   name: nodepools.karpenter.sh
+  namespace: karpenter
 spec:
   group: karpenter.sh
   names:
@@ -923,6 +925,7 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.18.0
   name: aksnodeclasses.karpenter.azure.com
+  namespace: karpenter
 spec:
   group: karpenter.azure.com
   names:
