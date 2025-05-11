@@ -22,11 +22,14 @@ spec:
         #   operator: In
         #   values: [A]
       nodeClassRef:
+        group: karpenter.azure.com
+        kind: AKSNodeClass
         name: aws-node-class-ubuntu2204
   limits:
     cpu: 100
   disruption:
     consolidationPolicy: WhenEmptyOrUnderutilized
+    consolidateAfter: 5m
     expireAfter: 720h
     budgets:
       - nodes: 30%
