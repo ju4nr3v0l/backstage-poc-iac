@@ -75,3 +75,9 @@ resource "azurerm_role_assignment" "managed_identity_operator" {
   role_definition_name = "Managed Identity Operator"  
   principal_id         = azurerm_user_assigned_identity.karpenter.principal_id  
 }
+
+resource "azurerm_role_assignment" "vnet_reader" {  
+  scope                = azurerm_virtual_network.vnet.id  
+  role_definition_name = "Network Contributor"  
+  principal_id         = azurerm_user_assigned_identity.karpenter.principal_id  
+}
