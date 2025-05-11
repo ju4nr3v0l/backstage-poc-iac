@@ -14,6 +14,9 @@ spec:
     targetRevision: 0.7.0
     helm:
       values: |
+        serviceAccount:
+          annotations:
+            azure.workload.identity/client-id: c8fea6de-aa6a-454f-96ad-2d6e63cf32a3
         controller:
           env:
             - name: CLUSTER_NAME
@@ -44,13 +47,13 @@ spec:
               value: ""
             - name: AZURE_NODE_RESOURCE_GROUP
               value: MC_RG-poc-iac_CK-poc-iac_eastus
-          resources:
-            requests:
-              cpu: 1
-              memory: 1Gi
-            limits:
-              cpu: 1
-              memory: 1Gi
+          # resources:
+          #   requests:
+          #     cpu: 1
+          #     memory: 1Gi
+          #   limits:
+          #     cpu: 1
+          #     memory: 1Gi
   destination:
     server: https://kubernetes.default.svc
     namespace: karpenter
