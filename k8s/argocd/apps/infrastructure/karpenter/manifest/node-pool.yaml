@@ -2,6 +2,7 @@ apiVersion: karpenter.sh/v1beta1
 kind: NodePool
 metadata:
   name: general-purpose
+  namespace: karpenter
   annotations:
     kubernetes.io/description: "General purpose NodePool for generic workloads"
 spec:
