@@ -3,6 +3,9 @@ kind: Application
 metadata:
   name: karpenter
   namespace: argocd
+  labels:
+    team: infrastructure
+    app: karpenter
 spec:
   project: infrastructure
   source:
