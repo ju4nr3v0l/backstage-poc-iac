@@ -1,0 +1,39 @@
+# argocd/projects/appla-project.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: infrastructure
+  namespace: argocd
+  annotations:
+    appla.io/team: "platform-team"
+spec:
+  description: "Proyecto para agrupar los componentes de infraestructura la POC Sistecredito"
+
+  # Permitir todos los repositorios necesarios
+  sourceRepos:
+    - "*"
+
+  # Definir los namespaces permitidos
+  destinations:
+    - namespace: "*"
+      server: https://kubernetes.default.svc
+
+  # Recursos de cluster permitidos
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
+
+  # Roles para acceso a la UI
+  roles:
+    # Rol para administradores
+    - name: admin
+      description: Admin role
+      policies:
+        - p, proj:infrastructure:admin, applications, , infrastructure/, allow
+        - p, proj:infrastructure:admin, repositories, , infrastructure/, allow
+      groups:
+        - infrastructure-admins
