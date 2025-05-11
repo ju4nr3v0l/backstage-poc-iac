@@ -1,3 +1,26 @@
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: karpenter
+#   namespace: argocd
+#   labels:
+#     team: infrastructure
+#     app: karpenter
+# spec:
+#   project: infrastructure
+#   source:
+#     repoURL: git@github.com:ju4nr3v0l/backstage-poc-iac.git
+#     targetRevision: main
+#     path: k8s/argocd/apps/infrastructure/karpenter/manifest
+#   destination:
+#     server: https://kubernetes.default.svc
+#     namespace: karpenter
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - CreateNamespace=true
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -9,9 +32,48 @@ metadata:
 spec:
   project: infrastructure
   source:
-    repoURL: git@github.com:ju4nr3v0l/backstage-poc-iac.git
-    targetRevision: main
-    path: k8s/argocd/apps/infrastructure/karpenter/manifest
+    chart: karpenter
+    repoURL: mcr.microsoft.com/aks/karpenter
+    targetRevision: 0.7.0
+    helm:
+      values: |
+        controller:
+          env:
+            - name: CLUSTER_NAME
+              value: CK-poc-iac
+            - name: CLUSTER_ENDPOINT
+              value: https://ck-poc-iac-vgj962co.hcp.eastus.azmk8s.io:443
+            - name: KUBELET_BOOTSTRAP_TOKEN
+              value: s26nm3.64xoidix1xtqmu4l
+            - name: SSH_PUBLIC_KEY
+              value:
+                ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXha/uWNm50lME8VeaSptprU2AxCzA3KZ2rJl2sNjMhoGvPcOyKibkhkVXdLyLFCl/a51bwlefbJyj1/ClrTZboCP72v7ctqVK7io95dpI79o8P0s+aBRbhwuLhkUKQOb2m9OL0LHUJn5HS8KgNe5ny7dRFvfFA7SwX4HrkyeuOtnHzLv17VRlMguT/YnPoyDKMNETmxFBaYzrUWf8MCF2WywcancsGza9DPMRsECbPG075BKQqoeROhPMMtp3EO14ecdXG/1fbBoUifaNdrReB8wet/neTlQroatFLjnQgt/ri0AQ3n7JWrzMIS3gZJAiN3+9cUijcQWCSMgAvlq14EmDlF8Ms7rougo/UMCut6kmiUTHOxOw6X94CcJPgJHO4Kqxzukt2v+lJqgfk4kyKUfSvaI6XVal/bIR3HEuL/dWuADhg6/P1E8FC8C0UXfGT6kNaaA9BZheIi8it6wJ/k9Eq4o/gftbDxJ3F2brmwlAjTmE1kvLhqGvHigHzoU=
+                ju4nr3v0l@ju4nr3v0l azureuser
+            - name: NETWORK_PLUGIN
+              value: azure
+            - name: NETWORK_PLUGIN_MODE
+              value: ""
+            - name: NETWORK_POLICY
+              value: calico
+            - name: VNET_SUBNET_ID
+              value: /subscriptions/f8e621ae-b178-4f4b-9089-9bddcf072722/resourceGroups/RG-poc-iac/providers/Microsoft.Network/virtualNetworks/vnet-poc-iac/subnets/snet-aks
+            - name: NODE_IDENTITIES
+              value: /subscriptions/f8e621ae-b178-4f4b-9089-9bddcf072722/resourcegroups/MC_RG-poc-iac_CK-poc-iac_eastus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/CK-poc-iac-agentpool
+            - name: ARM_SUBSCRIPTION_ID
+              value: f8e621ae-b178-4f4b-9089-9bddcf072722
+            - name: LOCATION
+              value: eastus
+            - name: KUBELET_IDENTITY_CLIENT_ID
+              value: ""
+            - name: AZURE_NODE_RESOURCE_GROUP
+              value: MC_RG-poc-iac_CK-poc-iac_eastus
+          resources:
+            requests:
+              cpu: 1
+              memory: 1Gi
+            limits:
+              cpu: 1
+              memory: 1Gi
   destination:
     server: https://kubernetes.default.svc
     namespace: karpenter
