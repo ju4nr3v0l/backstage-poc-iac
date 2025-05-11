@@ -76,8 +76,8 @@ resource "azurerm_role_assignment" "managed_identity_operator" {
   principal_id         = azurerm_user_assigned_identity.karpenter.principal_id  
 }
 
-resource "azurerm_role_assignment" "vnet_reader" {  
+resource "azurerm_role_assignment" "vnet" {  
   scope                = azurerm_virtual_network.vnet.id  
   role_definition_name = "Network Contributor"  
-  principal_id         = azurerm_user_assigned_identity.karpenter.principal_id  
+  principal_id         = "b0ea788c-2293-4345-973b-60e211e9bafb" # User identity Marulanda
 }
