@@ -22,7 +22,7 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: karpenter-sa
+  name: karpenter
   namespace: karpenter
   labels:
     helm.sh/chart: karpenter-0.7.0
@@ -61,7 +61,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups: ["karpenter.sh"]
-    resources: ["nodepools", "nodepools/status", "nodeclaims", "nodeclaims/status"]
+    resources:
+      ["nodepools", "nodepools/status", "nodeclaims", "nodeclaims/status"]
     verbs: ["get", "list", "watch", "create", "delete", "patch"]
   - apiGroups: ["karpenter.azure.com"]
     resources: ["aksnodeclasses"]
@@ -81,10 +82,19 @@ metadata:
 rules:
   # Read
   - apiGroups: ["karpenter.sh"]
-    resources: ["nodepools", "nodepools/status", "nodeclaims", "nodeclaims/status"]
+    resources:
+      ["nodepools", "nodepools/status", "nodeclaims", "nodeclaims/status"]
     verbs: ["get", "list", "watch"]
   - apiGroups: [""]
-    resources: ["pods", "nodes", "persistentvolumes", "persistentvolumeclaims", "replicationcontrollers", "namespaces"]
+    resources:
+      [
+        "pods",
+        "nodes",
+        "persistentvolumes",
+        "persistentvolumeclaims",
+        "replicationcontrollers",
+        "namespaces",
+      ]
     verbs: ["get", "list", "watch"]
   - apiGroups: ["storage.k8s.io"]
     resources: ["storageclasses", "csinodes", "volumeattachments"]
@@ -159,7 +169,7 @@ roleRef:
   name: karpenter-core
 subjects:
   - kind: ServiceAccount
-    name: karpenter-sa
+    name: karpenter
     namespace: karpenter
 ---
 # Source: karpenter/templates/clusterrole.yaml
@@ -179,7 +189,7 @@ roleRef:
   name: karpenter
 subjects:
   - kind: ServiceAccount
-    name: karpenter-sa
+    name: karpenter
     namespace: karpenter
 ---
 # Source: karpenter/templates/role.yaml
@@ -278,7 +288,7 @@ roleRef:
   name: karpenter
 subjects:
   - kind: ServiceAccount
-    name: karpenter-sa
+    name: karpenter
     namespace: karpenter
 ---
 # Source: karpenter/templates/rolebinding.yaml
@@ -299,7 +309,7 @@ roleRef:
   name: karpenter-dns
 subjects:
   - kind: ServiceAccount
-    name: karpenter-sa
+    name: karpenter
     namespace: karpenter
 ---
 # Source: karpenter/templates/rolebinding.yaml
@@ -320,7 +330,7 @@ roleRef:
   name: karpenter-lease
 subjects:
   - kind: ServiceAccount
-    name: karpenter-sa
+    name: karpenter
     namespace: karpenter
 ---
 # Source: karpenter/templates/service.yaml
@@ -384,7 +394,7 @@ spec:
         azure.workload.identity/use: "true"
       annotations:
     spec:
-      serviceAccountName: karpenter-sa
+      serviceAccountName: karpenter
       securityContext:
         fsGroup: 65532
       priorityClassName: "system-cluster-critical"
@@ -448,7 +458,8 @@ spec:
             - name: KUBELET_BOOTSTRAP_TOKEN
               value: s26nm3.64xoidix1xtqmu4l
             - name: SSH_PUBLIC_KEY
-              value: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXha/uWNm50lME8VeaSptprU2AxCzA3KZ2rJl2sNjMhoGvPcOyKibkhkVXdLyLFCl/a51bwlefbJyj1/ClrTZboCP72v7ctqVK7io95dpI79o8P0s+aBRbhwuLhkUKQOb2m9OL0LHUJn5HS8KgNe5ny7dRFvfFA7SwX4HrkyeuOtnHzLv17VRlMguT/YnPoyDKMNETmxFBaYzrUWf8MCF2WywcancsGza9DPMRsECbPG075BKQqoeROhPMMtp3EO14ecdXG/1fbBoUifaNdrReB8wet/neTlQroatFLjnQgt/ri0AQ3n7JWrzMIS3gZJAiN3+9cUijcQWCSMgAvlq14EmDlF8Ms7rougo/UMCut6kmiUTHOxOw6X94CcJPgJHO4Kqxzukt2v+lJqgfk4kyKUfSvaI6XVal/bIR3HEuL/dWuADhg6/P1E8FC8C0UXfGT6kNaaA9BZheIi8it6wJ/k9Eq4o/gftbDxJ3F2brmwlAjTmE1kvLhqGvHigHzoU=
+              value:
+                ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXha/uWNm50lME8VeaSptprU2AxCzA3KZ2rJl2sNjMhoGvPcOyKibkhkVXdLyLFCl/a51bwlefbJyj1/ClrTZboCP72v7ctqVK7io95dpI79o8P0s+aBRbhwuLhkUKQOb2m9OL0LHUJn5HS8KgNe5ny7dRFvfFA7SwX4HrkyeuOtnHzLv17VRlMguT/YnPoyDKMNETmxFBaYzrUWf8MCF2WywcancsGza9DPMRsECbPG075BKQqoeROhPMMtp3EO14ecdXG/1fbBoUifaNdrReB8wet/neTlQroatFLjnQgt/ri0AQ3n7JWrzMIS3gZJAiN3+9cUijcQWCSMgAvlq14EmDlF8Ms7rougo/UMCut6kmiUTHOxOw6X94CcJPgJHO4Kqxzukt2v+lJqgfk4kyKUfSvaI6XVal/bIR3HEuL/dWuADhg6/P1E8FC8C0UXfGT6kNaaA9BZheIi8it6wJ/k9Eq4o/gftbDxJ3F2brmwlAjTmE1kvLhqGvHigHzoU=
                 ju4nr3v0l@ju4nr3v0l azureuser
             - name: NETWORK_PLUGIN
               value: azure
@@ -529,5 +540,3 @@ spec:
       tolerations:
         - key: CriticalAddonsOnly
           operator: Exists
-
-
