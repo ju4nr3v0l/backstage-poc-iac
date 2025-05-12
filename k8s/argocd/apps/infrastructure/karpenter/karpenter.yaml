@@ -16,7 +16,7 @@ spec:
       values: |
         serviceAccount:
           annotations:
-            azure.workload.identity/client-id: c8fea6de-aa6a-454f-96ad-2d6e63cf32a3
+            azure.workload.identity/client-id: af170b29-6d26-4db1-96ae-c4b65cab624b
         controller:
           env:
             - name: CLUSTER_NAME
