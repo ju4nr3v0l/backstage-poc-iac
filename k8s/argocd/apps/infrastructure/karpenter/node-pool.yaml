@@ -24,7 +24,7 @@ spec:
       nodeClassRef:
         group: karpenter.azure.com
         kind: AKSNodeClass
-        name: aws-node-class-ubuntu2204
+        name: azure-node-class-ubuntu2204
   limits:
     cpu: 100
   disruption:
