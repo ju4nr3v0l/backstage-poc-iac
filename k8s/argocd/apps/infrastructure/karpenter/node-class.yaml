@@ -1,7 +1,7 @@
 apiVersion: karpenter.azure.com/v1alpha2
 kind: AKSNodeClass
 metadata:
-  name: aws-node-class-ubuntu2204
+  name: azure-node-class-ubuntu2204
   namespace: karpenter
   annotations:
     kubernetes.io/description: "General purpose AKSNodeClass for running Ubuntu2204 nodes"
