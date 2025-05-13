@@ -40,6 +40,10 @@ jobs:
         working-directory: infra
         run: terraform init -input=false -upgrade
 
+      - name: Terradorm detach ip ingress
+        working-directory: infra
+        run: terraform destroy -target=helm_release.nginx_ingress
+
       - name: Terraform Destroy
         working-directory: infra
         run: terraform destroy -auto-approve -input=false
