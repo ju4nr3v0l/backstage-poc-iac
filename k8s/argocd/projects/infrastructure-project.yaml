@@ -37,4 +37,3 @@ spec:
         - p, proj:infrastructure:admin, repositories, , infrastructure/, allow
       groups:
         - infrastructure-admins
-        -
