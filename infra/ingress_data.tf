@@ -1,6 +1,6 @@
 # 1) Obtenemos el nombre del node_resource_group generado por AKS
 data "azurerm_kubernetes_cluster" "aks" {
-  name                = azurerm_kubernetes_cluster.aks.name
+  name                = var.aks_cluster_name
   resource_group_name = var.resource_group_name
 }
 
