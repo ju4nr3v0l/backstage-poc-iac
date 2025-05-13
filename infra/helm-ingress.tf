@@ -4,7 +4,6 @@ resource "azurerm_public_ip" "nginx_ingress" {
   location            = azurerm_kubernetes_cluster.aks.location
   allocation_method   = "Static"
   sku                 = "Standard"
-  depends_on = [helm_release.nginx_ingress]   # Helm se destruye primero
 }
 
 resource "helm_release" "nginx_ingress" {
