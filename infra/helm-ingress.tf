@@ -1,10 +1,9 @@
 resource "azurerm_public_ip" "nginx_ingress" {
   name                = "nginx-ingress-pip"
-  resource_group_name = azurerm_public_ip.nginx_ingress.resource_group_name
-  location            = var.location
+  resource_group_name = azurerm_kubernetes_cluster.aks.node_resource_group
+  location            = azurerm_kubernetes_cluster.aks.location
   allocation_method   = "Static"
   sku                 = "Standard"
-  depends_on          = [azurerm_public_ip.nginx_ingress]
 }
 
 resource "helm_release" "nginx_ingress" {
