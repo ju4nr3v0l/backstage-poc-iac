@@ -1,49 +1,68 @@
 # .github/workflows/terraform-destroy.yml
 name: Terraform Destroy
 
-on:
-  workflow_dispatch:     # solo ejecución manual
-
-permissions:
-  id-token: write        # necesario para azure/login@v1 (OIDC)
-  contents: read
+on: { workflow_dispatch: {} }
 
 jobs:
   destroy:
     runs-on: ubuntu-latest
-    environment: poc      # usa los secrets de este environment
-
+    timeout-minutes: 60
+    environment: poc
     env:
-      # Credenciales del provider AzureRM
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_CLIENT_ID:       ${{ secrets.AZURE_CLIENT_ID }}
       ARM_CLIENT_SECRET:   ${{ secrets.AZURE_CLIENT_SECRET }}
       ARM_TENANT_ID:       ${{ secrets.AZURE_TENANT_ID }}
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Azure login (OIDC)
-        uses: azure/login@v1
+      - uses: azure/login@v1
         with:
-          client-id:   ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id:   ${{ secrets.AZURE_TENANT_ID }}
+          client-id:       ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id:       ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.7.5
+      - uses: hashicorp/setup-terraform@v2
+        with: { terraform_version: 1.7.5 }
 
       - name: Terraform Init
         working-directory: infra
         run: terraform init -input=false -upgrade
 
-      - name: Terraform deattach ip ingress
+      # 1) Desinstalar Ingress primero
+      - name: Terraform destroy NGINX release
         working-directory: infra
         run: terraform destroy -target=helm_release.nginx_ingress -auto-approve -input=false
 
-      - name: Terraform Destroy
+      # 2) Esperar a que el Service desaparezca y la IP quede libre
+      - name: Esperar liberación de IP pública
+        run: |
+          set -e
+          echo "Esperando a que el Service nginx-ingress-controller se elimine…"
+          for i in {1..30}; do
+            if kubectl -n ingress-basic get svc nginx-ingress-controller >/dev/null 2>&1; then
+              echo "Aún existe, reintentando ($i/30)…"
+              sleep 20
+            else
+              echo "Service eliminado."
+              break
+            fi
+          done
+          echo "Validando que la IP no esté asociada…"
+          for i in {1..15}; do
+            STATUS=$(az network public-ip show \
+              --resource-group MC_RG-poc-iac_CK-poc-iac_eastus \
+              --name nginx-ingress-pip \
+              --query "ipConfiguration.id" -o tsv)
+            if [[ -z "$STATUS" ]]; then
+              echo "IP desasociada."
+              break
+            fi
+            echo "IP aún asociada, esperando ($i/15)…"
+            sleep 20
+          done
+
+      # 3) Destroy total sin bloqueo
+      - name: Terraform Destroy restante
         working-directory: infra
         run: terraform destroy -auto-approve -input=false
