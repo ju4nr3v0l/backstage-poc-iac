@@ -1,7 +1,7 @@
 resource "azurerm_public_ip" "nginx_ingress" {
   name                = "nginx-ingress-pip"
-  resource_group_name = azurerm_kubernetes_cluster.aks.node_resource_group
-  location            = azurerm_kubernetes_cluster.aks.location
+  resource_group_name = var.resource_group_name
+  location            = var.location
   allocation_method   = "Static"
   sku                 = "Standard"
 }

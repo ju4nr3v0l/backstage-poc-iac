@@ -1,7 +1,7 @@
 resource "azurerm_kubernetes_cluster" "aks" {
   name                = var.aks_cluster_name
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group_name
   dns_prefix          = var.aks_cluster_name
   oidc_issuer_enabled = true
   workload_identity_enabled = true
@@ -59,7 +59,7 @@ resource "azurerm_federated_identity_credential" "karpenter_federated_identity" 
 } 
 
 resource "azurerm_role_assignment" "vm_contributor" {  
-  scope                = azurerm_kubernetes_cluster.aks.node_resource_group_id  
+  scope                = azurerm_kubernetes_cluster.aks.node_resource_group_id
   role_definition_name = "Virtual Machine Contributor"  
   principal_id         = azurerm_user_assigned_identity.karpenter.principal_id  
 }  
