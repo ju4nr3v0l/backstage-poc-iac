@@ -1,10 +1,9 @@
 # .github/workflows/terraform-destroy.yml
 name: Terraform Destroy
-
 on: { workflow_dispatch: {} }
 
 permissions:
-  id-token: write
+  id-token: write        # OIDC
   contents: read
 
 jobs:
@@ -17,6 +16,8 @@ jobs:
       ARM_CLIENT_ID:       ${{ secrets.AZURE_CLIENT_ID }}
       ARM_CLIENT_SECRET:   ${{ secrets.AZURE_CLIENT_SECRET }}
       ARM_TENANT_ID:       ${{ secrets.AZURE_TENANT_ID }}
+      TF_INPUT:            "false"
+
     steps:
       - uses: actions/checkout@v3
 
@@ -27,53 +28,29 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - uses: hashicorp/setup-terraform@v2
-        with: { terraform_version: 1.7.5 }
 
       - name: Terraform Init
         working-directory: infra
-        run: terraform init -input=false -upgrade
+        run: terraform init -upgrade
 
-      ##################################################################
-      # 1) Cambiar el Service a ClusterIP → libera la IP en el LB
-      ##################################################################
-      - name: Desasociar IP de ingress-nginx
-        run: |
-          echo "Parchando Service ingress-nginx-controller a ClusterIP…"
-          kubectl -n ingress-basic patch svc ingress-nginx-controller \
-            -p '{"spec":{"type":"ClusterIP"}}' || true
-
-      ##################################################################
-      # 2) Desinstalar la release Helm (pods, configmaps, etc.)
-      ##################################################################
-      - name: Terraform destroy NGINX release
+      # 1) Desinstalar el chart de ingress
+      - name: Destroy helm_release.nginx_ingress
         working-directory: infra
-        run: terraform destroy -target=helm_release.nginx_ingress -auto-approve -input=false
+        run: terraform destroy -target=helm_release.nginx_ingress -auto-approve
 
-      - name: Limpiar LB y liberar IP
+      # 2) Esperar a que Azure libere la IP
+      - name: Esperar que la IP quede sin asociación
         run: |
-          bash scripts/clean_lb.sh    # (guarda el bloque anterior en scripts/clean_lb.sh)
-
-
-      ##################################################################
-      # 3) Esperar a que la IP quede realmente libre
-      ##################################################################
-      - name: Esperar desasociación definitiva de la IP
-        run: |
-          set -e
           IP_RG="MC_RG-poc-iac_CK-poc-iac_eastus"
           IP_NAME="nginx-ingress-pip"
-          echo "Esperando a que la IP se marque Unassigned…"
+          echo "Esperando a que $IP_NAME quede Unassigned…"
           az network public-ip wait \
             --resource-group "$IP_RG" \
             --name "$IP_NAME" \
-            --query "ipConfiguration.id" \
-            --is-null \
-            --interval 20 \
-            --timeout 600
+            --is-null --query "ipConfiguration.id" \
+            --interval 30 --timeout 900
 
-      ##################################################################
-      # 4) Destroy completo: ya no habrá referencia y el delete pasará
-      ##################################################################
+      # 3) Destruir el resto de la infraestructura
       - name: Terraform Destroy restante
         working-directory: infra
-        run: terraform destroy -auto-approve -input=false
+        run: terraform destroy -auto-approve
