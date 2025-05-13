@@ -1,9 +1,10 @@
 resource "azurerm_public_ip" "nginx_ingress" {
   name                = "nginx-ingress-pip"
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_public_ip.nginx_ingress.resource_group_name
   location            = var.location
   allocation_method   = "Static"
   sku                 = "Standard"
+  depends_on          = [azurerm_public_ip.nginx_ingress]
 }
 
 resource "helm_release" "nginx_ingress" {
