@@ -3,14 +3,15 @@ name: Terraform Destroy
 
 on: { workflow_dispatch: {} }
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   destroy:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     environment: poc
-    permissions:
-      id-token: write   # 🔑 necesario para OIDC
-      contents: read    # mínimamente requerido para checkout
     env:
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_CLIENT_ID:       ${{ secrets.AZURE_CLIENT_ID }}
@@ -32,40 +33,42 @@ jobs:
         working-directory: infra
         run: terraform init -input=false -upgrade
 
-      # 1) Desinstalar Ingress primero
+      ##################################################################
+      # 1) Cambiar el Service a ClusterIP → libera la IP en el LB
+      ##################################################################
+      - name: Desasociar IP de ingress-nginx
+        run: |
+          echo "Parchando Service ingress-nginx-controller a ClusterIP…"
+          kubectl -n ingress-basic patch svc ingress-nginx-controller \
+            -p '{"spec":{"type":"ClusterIP"}}' || true
+
+      ##################################################################
+      # 2) Desinstalar la release Helm (pods, configmaps, etc.)
+      ##################################################################
       - name: Terraform destroy NGINX release
         working-directory: infra
         run: terraform destroy -target=helm_release.nginx_ingress -auto-approve -input=false
 
-      # 2) Esperar a que el Service desaparezca y la IP quede libre
-      - name: Esperar liberación de IP pública
+      ##################################################################
+      # 3) Esperar a que la IP quede realmente libre
+      ##################################################################
+      - name: Esperar desasociación definitiva de la IP
         run: |
           set -e
-          echo "Esperando a que el Service ingress-nginx-controller se elimine…"
-          for i in {1..30}; do
-            if kubectl -n ingress-basic get svc ingress-nginx-controller >/dev/null 2>&1; then
-              echo "Aún existe, reintentando ($i/30)…"
-              sleep 20
-            else
-              echo "Service eliminado."
-              break
-            fi
-          done
-          echo "Validando que la IP no esté asociada…"
-          for i in {1..15}; do
-            STATUS=$(az network public-ip show \
-              --resource-group MC_RG-poc-iac_CK-poc-iac_eastus \
-              --name nginx-ingress-pip \
-              --query "ipConfiguration.id" -o tsv)
-            if [[ -z "$STATUS" ]]; then
-              echo "IP desasociada."
-              break
-            fi
-            echo "IP aún asociada, esperando ($i/15)…"
-            sleep 20
-          done
+          IP_RG="MC_RG-poc-iac_CK-poc-iac_eastus"
+          IP_NAME="nginx-ingress-pip"
+          echo "Esperando a que la IP se marque Unassigned…"
+          az network public-ip wait \
+            --resource-group "$IP_RG" \
+            --name "$IP_NAME" \
+            --query "ipConfiguration.id" \
+            --is-null \
+            --interval 20 \
+            --timeout 600
 
-      # 3) Destroy total sin bloqueo
+      ##################################################################
+      # 4) Destroy completo: ya no habrá referencia y el delete pasará
+      ##################################################################
       - name: Terraform Destroy restante
         working-directory: infra
         run: terraform destroy -auto-approve -input=false
