@@ -41,9 +41,9 @@ jobs:
       - name: Esperar liberación de IP pública
         run: |
           set -e
-          echo "Esperando a que el Service nginx-ingress-controller se elimine…"
+          echo "Esperando a que el Service ingress-nginx-controller se elimine…"
           for i in {1..30}; do
-            if kubectl -n ingress-basic get svc nginx-ingress-controller >/dev/null 2>&1; then
+            if kubectl -n ingress-basic get svc ingress-nginx-controller >/dev/null 2>&1; then
               echo "Aún existe, reintentando ($i/30)…"
               sleep 20
             else
