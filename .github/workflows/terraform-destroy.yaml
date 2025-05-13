@@ -8,6 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     environment: poc
+    permissions:
+      id-token: write   # 🔑 necesario para OIDC
+      contents: read    # mínimamente requerido para checkout
     env:
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_CLIENT_ID:       ${{ secrets.AZURE_CLIENT_ID }}
