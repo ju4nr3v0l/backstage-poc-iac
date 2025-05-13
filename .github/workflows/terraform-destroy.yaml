@@ -49,6 +49,11 @@ jobs:
         working-directory: infra
         run: terraform destroy -target=helm_release.nginx_ingress -auto-approve -input=false
 
+      - name: Limpiar LB y liberar IP
+        run: |
+          bash scripts/clean_lb.sh    # (guarda el bloque anterior en scripts/clean_lb.sh)
+
+
       ##################################################################
       # 3) Esperar a que la IP quede realmente libre
       ##################################################################
