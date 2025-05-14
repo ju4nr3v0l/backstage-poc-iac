@@ -20,6 +20,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     os_disk_size_gb = 30
     type            = "VirtualMachineScaleSets"
     max_pods        = 110
+    temporary_name_for_rotation = "temp-autoscaling-nodepool"
   }
 
   network_profile {
