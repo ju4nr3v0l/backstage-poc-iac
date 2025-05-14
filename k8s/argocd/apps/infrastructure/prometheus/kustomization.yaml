@@ -1,0 +1,12 @@
+# Usa los manifests oficiales del tag v0.74.0 (mayo-2025)
+resources:
+  # CRDs y RBAC
+  - github.com/prometheus-operator/kube-prometheus/manifests/setup?ref=v0.74.0
+  # Prometheus-operator, Alertmanager, Prometheus, node-exporter, KSM…
+  - github.com/prometheus-operator/kube-prometheus/manifests?ref=v0.74.0
+
+namespace: monitoring
+
+# Parche para exponer Prometheus por LoadBalancer en AKS
+patchesStrategicMerge:
+  - prometheus-server-lb.yaml

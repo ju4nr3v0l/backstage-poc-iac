@@ -22,19 +22,19 @@ spec:
             - name: CLUSTER_NAME
               value: CK-poc-iac
             - name: CLUSTER_ENDPOINT
-              value: https://ck-poc-iac-i21srtnz.hcp.eastus.azmk8s.io:443
+              value: https://ck-poc-iac-73ar4wtb.hcp.eastus.azmk8s.io:443
             - name: KUBELET_BOOTSTRAP_TOKEN
-              value: n89kjp.i17ndbjsq2sh4xke
+              value: 9rxvfo.sd77vtu51kxz3iyk
             - name: SSH_PUBLIC_KEY
               value: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXha/uWNm50lME8VeaSptprU2AxCzA3KZ2rJl2sNjMhoGvPcOyKibkhkVXdLyLFCl/a51bwlefbJyj1/ClrTZboCP72v7ctqVK7io95dpI79o8P0s+aBRbhwuLhkUKQOb2m9OL0LHUJn5HS8KgNe5ny7dRFvfFA7SwX4HrkyeuOtnHzLv17VRlMguT/YnPoyDKMNETmxFBaYzrUWf8MCF2WywcancsGza9DPMRsECbPG075BKQqoeROhPMMtp3EO14ecdXG/1fbBoUifaNdrReB8wet/neTlQroatFLjnQgt/ri0AQ3n7JWrzMIS3gZJAiN3+9cUijcQWCSMgAvlq14EmDlF8Ms7rougo/UMCut6kmiUTHOxOw6X94CcJPgJHO4Kqxzukt2v+lJqgfk4kyKUfSvaI6XVal/bIR3HEuL/dWuADhg6/P1E8FC8C0UXfGT6kNaaA9BZheIi8it6wJ/k9Eq4o/gftbDxJ3F2brmwlAjTmE1kvLhqGvHigHzoU= ju4nr3v0l@ju4nr3v0l azureuser"
             - name: NETWORK_PLUGIN
               value: azure
             - name: NETWORK_PLUGIN_MODE
-              value: ""
+              value: overlay
             - name: NETWORK_POLICY
-              value: calico
+              value: azure
             - name: VNET_SUBNET_ID
-              value: /subscriptions/f8e621ae-b178-4f4b-9089-9bddcf072722/resourceGroups/RG-poc-iac/providers/Microsoft.Network/virtualNetworks/vnet-poc-iac/subnets/snet-aks
+              value: "/subscriptions/f8e621ae-b178-4f4b-9089-9bddcf072722/resourceGroups/RG-poc-iac/providers/Microsoft.Network/virtualNetworks/vnet-poc-iac/subnets/snet-aks"
             - name: NODE_IDENTITIES
               value: /subscriptions/f8e621ae-b178-4f4b-9089-9bddcf072722/resourcegroups/MC_RG-poc-iac_CK-poc-iac_eastus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/CK-poc-iac-agentpool
             # Azure client settings
