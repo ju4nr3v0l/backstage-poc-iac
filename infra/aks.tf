@@ -3,6 +3,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   location            = var.location
   resource_group_name = var.resource_group_name
   dns_prefix          = var.aks_cluster_name
+  network_plugin_mode = "overlay"
   oidc_issuer_enabled = true
   workload_identity_enabled = true
 
@@ -26,7 +27,6 @@ resource "azurerm_kubernetes_cluster" "aks" {
   network_profile {
     network_plugin = "azure"
     network_policy = ""
-    NetworkPluginMode = "overlay"
     service_cidr   = "10.0.2.0/24"
     dns_service_ip = "10.0.2.10"
   }
