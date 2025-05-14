@@ -37,11 +37,11 @@ variable "aks_cluster_name" {
 variable "agent_count" {
   description = "Número de nodos"
   type        = number
-  default     = 3
+  default     = 1
 }
 
 variable "agent_vm_size" {
   description = "Tamaño de VM para los nodos"
   type        = string
-  default     = "standard_a1_v2"
+  default     = "standard_a2_v2"
 }

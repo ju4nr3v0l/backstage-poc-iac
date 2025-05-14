@@ -19,7 +19,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     vnet_subnet_id  = azurerm_subnet.aks.id
     os_disk_size_gb = 30
     type            = "VirtualMachineScaleSets"
-    max_pods        = 110
+    max_pods        = 70
     temporary_name_for_rotation = "tempnodename" # opcional: nombre temporal para rotación de nodos
   }
 
