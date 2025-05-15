@@ -4,6 +4,7 @@ resources:
   - github.com/prometheus-operator/kube-prometheus/manifests/setup?ref=v0.74.0
   # Prometheus-operator, Alertmanager, Prometheus, node-exporter, KSM…
   - github.com/prometheus-operator/kube-prometheus/manifests?ref=v0.74.0
+  - prometheus.yaml
 
 namespace: monitoring
 

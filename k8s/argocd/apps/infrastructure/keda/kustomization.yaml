@@ -1,3 +1,4 @@
 resources:
   - keda-core.yaml
+  - keda.yaml
 namespace: keda
