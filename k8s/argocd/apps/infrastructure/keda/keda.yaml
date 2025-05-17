@@ -2,27 +2,35 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: keda
-  namespace: argocd
+  namespace: keda
   labels:
     team: infrastructure
     app: keda
 spec:
   project: infrastructure
   source:
-    repoURL: "https://kedacore.github.io/charts"
     chart: keda
-    targetRevision: 2.14.0          # última GA
+    repoURL: https://kedacore.github.io/charts
+    targetRevision: 2.17.1
     helm:
       values: |
-        operator:
-          replicaCount: 1
-        resources:
-          limits:
-            cpu: 200m
-            memory: 256Mi
-          requests:
-            cpu: 100m
-            memory: 128Mi
+        http:
+          timeout: 10000
+          keepAlive:
+            enabled: false
+          minTlsVersion: TLS13
+        prometheus:
+          metricServer:
+            enabled: true
+            port: 8080
+            portName: metrics
+            serviceMonitor:
+              enabled: true
+          operator:
+            enabled: true
+            port: 8080
+            serviceMonitor:
+              enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: keda
