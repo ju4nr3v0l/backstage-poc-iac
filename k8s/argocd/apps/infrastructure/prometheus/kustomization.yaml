@@ -1,13 +1,12 @@
-# Usa los manifests oficiales del tag v0.74.0 (mayo-2025)
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
 resources:
-  # CRDs y RBAC
-  - github.com/prometheus-operator/kube-prometheus/manifests/setup?ref=v0.74.0
-  # Prometheus-operator, Alertmanager, Prometheus, node-exporter, KSM…
-  - github.com/prometheus-operator/kube-prometheus/manifests?ref=v0.74.0
-  - prometheus.yaml
+  - app.yaml
 
-namespace: monitoring
+namespace: argocd
 
-# Parche para exponer Prometheus por LoadBalancer en AKS
-patchesStrategicMerge:
-  - prometheus-server-lb.yaml
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: infrastructure
+      app.kubernetes.io/managed-by: argocd
