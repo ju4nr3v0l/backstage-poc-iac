@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - keda
   - prometheus
+  - app.yaml
