@@ -5,3 +5,4 @@ resources:
   - keda
   - prometheus
   - app.yaml
+  - kro

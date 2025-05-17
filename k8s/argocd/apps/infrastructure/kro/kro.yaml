@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kro
+  namespace: argocd
+  labels:
+    team: infrastructure
+    app: kro
+spec:
+  project: infrastructure
+  source:
+    chart: kro
+    repoURL: ghcr.io/kro-run/kro
+    targetRevision: 0.2.3
+    helm:
+      values: |
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kro
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
