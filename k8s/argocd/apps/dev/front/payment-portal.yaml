@@ -10,7 +10,7 @@ spec:
     enabled: true                    # Se crea automáticamente
     serviceport: 80                  # Puerto expuesto por el Service
     protocol: TCP                    # Protocolo
-  namespace: dev                 # Namespace donde se crean los objetos
+  namespace: apps-dev                 # Namespace donde se crean los objetos
   replicas: 1                        # Réplicas fijas
   autoscaling:                       # Configuración de HPA/KEDA
     enabled: true                   # Desactivado por defecto
