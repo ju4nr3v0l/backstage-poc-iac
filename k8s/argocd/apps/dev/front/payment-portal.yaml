@@ -10,10 +10,3 @@ spec:
     enabled: true                    # Se crea automáticamente
     serviceport: 80                  # Puerto expuesto por el Service
     protocol: TCP                    # Protocolo
-  namespace: apps-dev                 # Namespace donde se crean los objetos
-  replicas: 1                        # Réplicas fijas
-  autoscaling:                       # Configuración de HPA/KEDA
-    enabled: true                   # Desactivado por defecto
-    minReplicas: 1                   # Réplicas mínimas
-    maxReplicas: 5                   # Réplicas máximas
-    cpu: 80                          # % de utilización de CPU para HPA
