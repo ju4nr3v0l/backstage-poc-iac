@@ -1,12 +1,19 @@
 apiVersion: kro.run/v1alpha1
 kind: front-application
 metadata:
-  name: simple-web-app               # Nombre único del CR
+  name: payment-portal               # Nombre único del CR
 spec:
-  name: simple-web                   # Prefijo usado en Deployment y Service
+  name: payment-portal               # Prefijo usado en Deployment y Service
   image: yeasy/simple-web:latest     # Imagen de Docker Hub
   containerport: 80                  # Puerto que expone el contenedor
   service:                           # Service asociado
     enabled: true                    # Se crea automáticamente
     serviceport: 80                  # Puerto expuesto por el Service
     protocol: TCP                    # Protocolo
+  namespace: dev                 # Namespace donde se crean los objetos
+  replicas: 1                        # Réplicas fijas
+  autoscaling:                       # Configuración de HPA/KEDA
+    enabled: true                   # Desactivado por defecto
+    minReplicas: 1                   # Réplicas mínimas
+    maxReplicas: 5                   # Réplicas máximas
+    cpu: 80                          # % de utilización de CPU para HPA
