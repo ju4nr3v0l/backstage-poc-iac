@@ -1,0 +1,12 @@
+apiVersion: kro.run/v1alpha1
+kind: front-application
+metadata:
+  name: simple-web-app               # Nombre único del CR
+spec:
+  name: simple-web                   # Prefijo usado en Deployment y Service
+  image: yeasy/simple-web:latest     # Imagen de Docker Hub
+  containerport: 80                  # Puerto que expone el contenedor
+  service:                           # Service asociado
+    enabled: true                    # Se crea automáticamente
+    serviceport: 80                  # Puerto expuesto por el Service
+    protocol: TCP                    # Protocolo                # Puerto que publica el Ingress

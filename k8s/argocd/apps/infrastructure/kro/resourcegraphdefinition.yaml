@@ -1,0 +1,90 @@
+apiVersion: kro.run/v1alpha1
+kind: ResourceGraphDefinition
+metadata:
+  name: front-application
+spec:
+  # kro uses this simple schema to create your CRD schema and apply it
+  # The schema defines what users can provide when they instantiate the RGD (create an instance).
+  schema:
+    apiVersion: v1alpha1
+    kind: Application
+    spec:
+      # Spec fields that users can provide.
+      name: string
+      image: string | default="nginx"
+      ingress:
+        enabled: boolean | default=false
+        ingressport: integer | default=80
+      containerport: integer | default=80
+      service:
+        enabled: boolean | default=true
+        serviceport: integer | default=80
+        protocol: string | default="TCP"
+    status:
+      # Fields the controller will inject into instances status.
+      deploymentConditions: ${deployment.status.conditions}
+      availableReplicas: ${deployment.status.availableReplicas}
+
+  # Define the resources this API will manage.
+  resources:
+    - id: deployment
+      template:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: ${schema.spec.name} # Use the name provided by user
+        spec:
+          #replicas: 3 Se quita las replicas porque vamos a usar keda para esto
+          selector:
+            matchLabels:
+              app: ${schema.spec.name}
+          template:
+            metadata:
+              labels:
+                app: ${schema.spec.name}
+            spec:
+              containers:
+                - name: ${schema.spec.name}
+                  image: ${schema.spec.image} # Use the image provided by user
+                  ports:
+                    - containerPort: ${schema.spec.containerport} # Use the port provided by user
+
+    - id: service
+      template:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: ${schema.spec.name}-service
+        spec:
+          selector: ${deployment.spec.selector.matchLabels} # Use the deployment selector
+          ports:
+            - protocol: ${schema.spec.service.protocol} # Use the protocol provided by user
+              port: ${schema.spec.service.serviceport} # Use the service port provided by user
+              targetPort: ${schema.spec.containerport} # Use the container port provided by user
+
+#    - id: ingress
+#      includeWhen:
+#        - ${schema.spec.ingress.enabled} # Only include if the user wants to create an Ingress
+#      template:
+#        apiVersion: networking.k8s.io/v1
+#        kind: Ingress
+#        metadata:
+#          name: ${schema.spec.name}-ingress
+#          annotations:
+#            kubernetes.io/ingress.class: alb
+#            alb.ingress.kubernetes.io/scheme: internet-facing
+#            alb.ingress.kubernetes.io/target-type: ip
+#            alb.ingress.kubernetes.io/healthcheck-path: /health
+#            alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+#            alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=60
+#        spec:
+#          rules:
+#            - http:
+#                paths:
+#                  - path: "/"
+#                    pathType: Prefix
+#                    backend:
+#                      service:
+#                        name: ${service.metadata.name} # Use the service name
+#                        port:
+#                          number: ${service.metadata.ingressport} # Use the service port
