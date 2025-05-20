@@ -11,7 +11,7 @@ spec:
     path: k8s/argocd/apps/dev
   destination:
     server: https://kubernetes.default.svc
-    namespace: kube-system
+    namespace: k8s-dev
   syncPolicy:
     automated:
       prune: true
