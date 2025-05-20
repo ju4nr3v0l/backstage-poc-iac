@@ -9,4 +9,4 @@ spec:
   service:                           # Service asociado
     enabled: true                    # Se crea automáticamente
     serviceport: 80                  # Puerto expuesto por el Service
-    protocol: TCP                    # Protocolo                # Puerto que publica el Ingress
+    protocol: TCP                    # Protocolo
