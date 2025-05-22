@@ -27,13 +27,10 @@ spec:
         minReplicas: integer | default=1
         maxReplicas: integer | default=5
         cpu: integer | default=80 # % CPU HPA
-  #        keda: # opcional, ejemplo RabbitMQ
-  #          queueName: string
-  #          queueLength: integer | default=30
-  # status:
-  # # Fields the controller will inject into instances status.
-  # deploymentConditions: ${deployment.status.conditions}
-  # availableReplicas: ${deployment.status.availableReplicas}
+    #        keda: # opcional, ejemplo RabbitMQ
+    #          queueName: string
+    #          queueLength: integer | default=30
+    status: {}
 
   # Define the resources this API will manage.
   resources:
