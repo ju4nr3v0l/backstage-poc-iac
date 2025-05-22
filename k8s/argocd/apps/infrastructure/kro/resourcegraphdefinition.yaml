@@ -95,7 +95,7 @@ spec:
 
     - id: scaledobject # ejemplo KEDA
       includeWhen:
-        - ${schema.spec.autoscaling.enabled}
+        - ${schema.spec.autoscaling != null && schema.spec.autoscaling.enabled == true}
       template:
         apiVersion: keda.sh/v1alpha1
         kind: ScaledObject
