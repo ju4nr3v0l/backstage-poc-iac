@@ -71,7 +71,7 @@ spec:
               targetPort: ${schema.spec.containerport} # Use the container port provided by user
     - id: hpa
       includeWhen: # solo si autoscaling.enabled
-        - ${schema.spec.autoscaling.enabled}
+        - ${schema.spec.autoscaling != null && schema.spec.autoscaling.enabled == true}
       template:
         apiVersion: autoscaling/v2
         kind: HorizontalPodAutoscaler
