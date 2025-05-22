@@ -3,3 +3,10 @@ kind: Kustomization
 
 resources:
   - payment-portal.yaml
+
+namespace: argocd
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: infrastructure
+      app.kubernetes.io/managed-by: argocd
