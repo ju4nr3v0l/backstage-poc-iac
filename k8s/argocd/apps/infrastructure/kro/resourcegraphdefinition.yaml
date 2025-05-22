@@ -56,6 +56,7 @@ spec:
         kind: Service
         metadata:
           name: ${schema.spec.name}-service
+          namespace: ${schema.spec.namespace}
         spec:
           selector: ${deployment.spec.selector.matchLabels}
           ports:
