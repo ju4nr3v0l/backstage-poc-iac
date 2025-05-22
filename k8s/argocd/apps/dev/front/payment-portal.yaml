@@ -4,12 +4,12 @@ metadata:
   name: payment-portal-app # Nombre único del CR
 spec:
   name: payment-portal # Prefijo usado en Deployment y Service
-  image: yeasy/simple-web:latest # Imagen de Docker Hub
+  image: juanmarulanda/flask-otel-app:latest # Imagen de Docker Hub
   namespace: dev # Namespace donde se despliega
-  containerport: 80 # Puerto que expone el contenedor
+  containerport: 5000 # Puerto que expone el contenedor
   service: # Service asociado
     enabled: true # Se crea automáticamente
-    serviceport: 80 # Puerto expuesto por el Service
+    serviceport: 5000 # Puerto expuesto por el Service
     protocol: TCP # Protocolo
   autoscaling:
     enabled: false
