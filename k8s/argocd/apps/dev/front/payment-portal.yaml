@@ -5,6 +5,7 @@ metadata:
 spec:
   name: payment-portal # Prefijo usado en Deployment y Service
   image: yeasy/simple-web:latest # Imagen de Docker Hub
+  namespace: dev # Namespace donde se despliega
   containerport: 80 # Puerto que expone el contenedor
   service: # Service asociado
     enabled: true # Se crea automáticamente
