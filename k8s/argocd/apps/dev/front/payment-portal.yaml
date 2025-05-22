@@ -1,9 +1,9 @@
 apiVersion: kro.run/v1alpha1
 kind: Application
 metadata:
-  name: payment-portal-app # Nombre único del CR
+  name: flask-otel-app # Nombre único del CR
 spec:
-  name: payment-portal # Prefijo usado en Deployment y Service
+  name: flask-otel-app # Prefijo usado en Deployment y Service
   image: juanmarulanda/flask-otel-app:latest # Imagen de Docker Hub
   namespace: dev # Namespace donde se despliega
   containerport: 5000 # Puerto que expone el contenedor
