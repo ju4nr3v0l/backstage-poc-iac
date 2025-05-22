@@ -3,13 +3,11 @@ kind: ResourceGraphDefinition
 metadata:
   name: front-application
 spec:
-  # kro uses this simple schema to create your CRD schema and apply it
-  # The schema defines what users can provide when they instantiate the RGD (create an instance).
+  # Keep the schema as is
   schema:
     apiVersion: v1alpha1
     kind: Application
     spec:
-      # Spec fields that users can provide.
       name: string
       image: string | default="nginx"
       ingress:
@@ -20,22 +18,17 @@ spec:
         enabled: boolean | default=true
         serviceport: integer | default=80
         protocol: string | default="TCP"
-      namespace: string | default="default" # dónde crear los objetos
-      replicas: integer | default=1 # réplicas fijas
-      autoscaling: # activar HPA / KEDA
+      namespace: string | default="default"
+      replicas: integer | default=1
+      autoscaling:
         enabled: boolean | default=false
         minReplicas: integer | default=1
         maxReplicas: integer | default=5
-        cpu: integer | default=80 # % CPU HPA
-    #        keda: # opcional, ejemplo RabbitMQ
-    #          queueName: string
-    #          queueLength: integer | default=30
+        cpu: integer | default=80
     status: {}
 
-  # Define the resources this API will manage.
   resources:
     - id: deployment
-      # Deployment stays the same
       template:
         apiVersion: apps/v1
         kind: Deployment
@@ -58,7 +51,6 @@ spec:
                     - containerPort: ${schema.spec.containerport}
 
     - id: service
-      # Service stays the same
       template:
         apiVersion: v1
         kind: Service
@@ -71,10 +63,10 @@ spec:
               port: ${schema.spec.service.serviceport}
               targetPort: ${schema.spec.containerport}
 
-    # Updated HPA resource with proper conditions
+    # Simplified HPA resource definition
     - id: hpa
       includeWhen:
-        - ${schema.spec.autoscaling != null && schema.spec.autoscaling.enabled == true}
+        - ${default(false, schema.spec.autoscaling.enabled)}
       template:
         apiVersion: autoscaling/v2
         kind: HorizontalPodAutoscaler
@@ -86,23 +78,20 @@ spec:
             apiVersion: apps/v1
             kind: Deployment
             name: ${deployment.metadata.name}
-          minReplicas:
-            ${schema.spec.autoscaling != null ? schema.spec.autoscaling.minReplicas: 1}
-          maxReplicas:
-            ${schema.spec.autoscaling != null ? schema.spec.autoscaling.maxReplicas: 5}
+          minReplicas: ${default(1, schema.spec.autoscaling.minReplicas)}
+          maxReplicas: ${default(5, schema.spec.autoscaling.maxReplicas)}
           metrics:
             - type: Resource
               resource:
                 name: cpu
                 target:
                   type: Utilization
-                  averageUtilization:
-                    ${schema.spec.autoscaling != null ? schema.spec.autoscaling.cpu: 80}
+                  averageUtilization: ${default(80, schema.spec.autoscaling.cpu)}
 
-    # Updated ScaledObject resource with proper conditions
+    # Simplified ScaledObject resource definition
     - id: scaledobject
       includeWhen:
-        - ${schema.spec.autoscaling != null && schema.spec.autoscaling.enabled == true}
+        - ${default(false, schema.spec.autoscaling.enabled)}
       template:
         apiVersion: keda.sh/v1alpha1
         kind: ScaledObject
@@ -112,10 +101,8 @@ spec:
         spec:
           scaleTargetRef:
             name: ${deployment.metadata.name}
-          minReplicaCount:
-            ${schema.spec.autoscaling != null ? schema.spec.autoscaling.minReplicas: 1}
-          maxReplicaCount:
-            ${schema.spec.autoscaling != null ? schema.spec.autoscaling.maxReplicas: 5}
+          minReplicaCount: ${default(1, schema.spec.autoscaling.minReplicas)}
+          maxReplicaCount: ${default(5, schema.spec.autoscaling.maxReplicas)}
 #    - id: ingress
 #      includeWhen:
 #        - ${schema.spec.ingress.enabled} # Only include if the user wants to create an Ingress
