@@ -1,12 +1,12 @@
 apiVersion: kro.run/v1alpha1
-kind: front-application
+kind: Application
 metadata:
-  name: payment-portal               # Nombre único del CR
+  name: payment-portal-app # Nombre único del CR
 spec:
-  name: payment-portal               # Prefijo usado en Deployment y Service
-  image: yeasy/simple-web:latest     # Imagen de Docker Hub
-  containerport: 80                  # Puerto que expone el contenedor
-  service:                           # Service asociado
-    enabled: true                    # Se crea automáticamente
-    serviceport: 80                  # Puerto expuesto por el Service
-    protocol: TCP                    # Protocolo
+  name: payment-portal # Prefijo usado en Deployment y Service
+  image: yeasy/simple-web:latest # Imagen de Docker Hub
+  containerport: 80 # Puerto que expone el contenedor
+  service: # Service asociado
+    enabled: true # Se crea automáticamente
+    serviceport: 80 # Puerto expuesto por el Service
+    protocol: TCP # Protocolo
