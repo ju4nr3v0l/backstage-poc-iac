@@ -14,7 +14,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: flask-otel-app
   podMetricsEndpoints:
-    - port: 5000                         # nombre del puerto en el Deployment
+    - port: metrics                         # nombre del puerto en el Deployment
       path: /metrics
       interval: 5s
       scrapeTimeout: 5s
