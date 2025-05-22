@@ -5,7 +5,7 @@ metadata:
 spec:
   name: flask-otel-app # Prefijo usado en Deployment y Service
   image: juanmarulanda/flask-otel-app:latest # Imagen de Docker Hub
-  namespace: dev # Namespace donde se despliega
+  namespace: dev
   containerport: 5000 # Puerto que expone el contenedor
   service: # Service asociado
     enabled: true # Se crea automáticamente
