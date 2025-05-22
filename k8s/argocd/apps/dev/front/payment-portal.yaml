@@ -10,3 +10,5 @@ spec:
     enabled: true # Se crea automáticamente
     serviceport: 80 # Puerto expuesto por el Service
     protocol: TCP # Protocolo
+  autoscaling:
+    enabled: false
