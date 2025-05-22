@@ -20,20 +20,20 @@ spec:
         enabled: boolean | default=true
         serviceport: integer | default=80
         protocol: string | default="TCP"
-      namespace: string | default="default"           # dónde crear los objetos
-      replicas: integer | default=1                   # réplicas fijas
+      namespace: string | default="default" # dónde crear los objetos
+      replicas: integer | default=1 # réplicas fijas
       autoscaling: # activar HPA / KEDA
         enabled: boolean | default=false
         minReplicas: integer | default=1
         maxReplicas: integer | default=5
-        cpu: integer | default=80                     # % CPU HPA
-#        keda: # opcional, ejemplo RabbitMQ
-#          queueName: string
-#          queueLength: integer | default=30
-    status:
-      # Fields the controller will inject into instances status.
-      deploymentConditions: ${deployment.status.conditions}
-      availableReplicas: ${deployment.status.availableReplicas}
+        cpu: integer | default=80 # % CPU HPA
+  #        keda: # opcional, ejemplo RabbitMQ
+  #          queueName: string
+  #          queueLength: integer | default=30
+  # status:
+  # # Fields the controller will inject into instances status.
+  # deploymentConditions: ${deployment.status.conditions}
+  # availableReplicas: ${deployment.status.availableReplicas}
 
   # Define the resources this API will manage.
   resources:
@@ -96,7 +96,7 @@ spec:
                   type: Utilization
                   averageUtilization: ${schema.spec.autoscaling.cpu}
 
-    - id: scaledobject                                   # ejemplo KEDA
+    - id: scaledobject # ejemplo KEDA
       includeWhen:
         - ${schema.spec.autoscaling.enabled}
       template:
@@ -110,8 +110,6 @@ spec:
             name: ${deployment.metadata.name}
           minReplicaCount: ${schema.spec.autoscaling.minReplicas}
           maxReplicaCount: ${schema.spec.autoscaling.maxReplicas}
-
-
 #    - id: ingress
 #      includeWhen:
 #        - ${schema.spec.ingress.enabled} # Only include if the user wants to create an Ingress
