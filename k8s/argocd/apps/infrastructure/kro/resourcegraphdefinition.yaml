@@ -35,14 +35,14 @@ spec:
   # Define the resources this API will manage.
   resources:
     - id: deployment
+      # Deployment stays the same
       template:
         apiVersion: apps/v1
         kind: Deployment
         metadata:
-          name: ${schema.spec.name} # Use the name provided by user
-          namespace: ${schema.spec.namespace} # Use the namespace provided by user
+          name: ${schema.spec.name}
+          namespace: ${schema.spec.namespace}
         spec:
-          #replicas: 3 Se quita las replicas porque vamos a usar keda para esto
           selector:
             matchLabels:
               app: ${schema.spec.name}
@@ -53,24 +53,27 @@ spec:
             spec:
               containers:
                 - name: ${schema.spec.name}
-                  image: ${schema.spec.image} # Use the image provided by user
+                  image: ${schema.spec.image}
                   ports:
-                    - containerPort: ${schema.spec.containerport} # Use the port provided by user
+                    - containerPort: ${schema.spec.containerport}
 
     - id: service
+      # Service stays the same
       template:
         apiVersion: v1
         kind: Service
         metadata:
           name: ${schema.spec.name}-service
         spec:
-          selector: ${deployment.spec.selector.matchLabels} # Use the deployment selector
+          selector: ${deployment.spec.selector.matchLabels}
           ports:
-            - protocol: ${schema.spec.service.protocol} # Use the protocol provided by user
-              port: ${schema.spec.service.serviceport} # Use the service port provided by user
-              targetPort: ${schema.spec.containerport} # Use the container port provided by user
+            - protocol: ${schema.spec.service.protocol}
+              port: ${schema.spec.service.serviceport}
+              targetPort: ${schema.spec.containerport}
+
+    # Updated HPA resource with proper conditions
     - id: hpa
-      includeWhen: # solo si autoscaling.enabled
+      includeWhen:
         - ${schema.spec.autoscaling != null && schema.spec.autoscaling.enabled == true}
       template:
         apiVersion: autoscaling/v2
@@ -83,17 +86,21 @@ spec:
             apiVersion: apps/v1
             kind: Deployment
             name: ${deployment.metadata.name}
-          minReplicas: ${schema.spec.autoscaling.minReplicas}
-          maxReplicas: ${schema.spec.autoscaling.maxReplicas}
+          minReplicas:
+            ${schema.spec.autoscaling != null ? schema.spec.autoscaling.minReplicas: 1}
+          maxReplicas:
+            ${schema.spec.autoscaling != null ? schema.spec.autoscaling.maxReplicas: 5}
           metrics:
             - type: Resource
               resource:
                 name: cpu
                 target:
                   type: Utilization
-                  averageUtilization: ${schema.spec.autoscaling.cpu}
+                  averageUtilization:
+                    ${schema.spec.autoscaling != null ? schema.spec.autoscaling.cpu: 80}
 
-    - id: scaledobject # ejemplo KEDA
+    # Updated ScaledObject resource with proper conditions
+    - id: scaledobject
       includeWhen:
         - ${schema.spec.autoscaling != null && schema.spec.autoscaling.enabled == true}
       template:
@@ -105,8 +112,10 @@ spec:
         spec:
           scaleTargetRef:
             name: ${deployment.metadata.name}
-          minReplicaCount: ${schema.spec.autoscaling.minReplicas}
-          maxReplicaCount: ${schema.spec.autoscaling.maxReplicas}
+          minReplicaCount:
+            ${schema.spec.autoscaling != null ? schema.spec.autoscaling.minReplicas: 1}
+          maxReplicaCount:
+            ${schema.spec.autoscaling != null ? schema.spec.autoscaling.maxReplicas: 5}
 #    - id: ingress
 #      includeWhen:
 #        - ${schema.spec.ingress.enabled} # Only include if the user wants to create an Ingress
