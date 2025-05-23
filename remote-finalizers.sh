@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo
 
-NAMESPACE="prometeus"
+NAMESPACE="dev"
 # Lista todos los tipos de recursos disponibles
 RESOURCE_TYPES=$(kubectl api-resources --verbs=list --namespaced -o name)
 

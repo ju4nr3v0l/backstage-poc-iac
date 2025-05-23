@@ -1,4 +1,4 @@
-NAMESPACE="prometeus"
+NAMESPACE="argocd"
 
 kubectl get ns "$NAMESPACE" -o json \
   | jq 'del(.spec.finalizers)' \
