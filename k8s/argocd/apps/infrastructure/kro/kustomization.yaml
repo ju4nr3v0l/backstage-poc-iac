@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - kro.yaml
   - resourcegraphdefinition.yaml
-  - resourcegraphdefinition2.yaml
 
 namespace: argocd
 
