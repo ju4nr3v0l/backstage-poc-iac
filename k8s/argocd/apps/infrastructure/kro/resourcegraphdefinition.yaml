@@ -14,7 +14,6 @@ spec:
         enabled: boolean | default=false
         ingressport: integer | default=80
       containerport: integer | default=80
-      metricsportname: string | default="metrics"
       service:
         enabled: boolean | default=true
         serviceport: integer | default=80
@@ -50,7 +49,6 @@ spec:
                   image: ${schema.spec.image}
                   ports:
                     - containerPort: ${schema.spec.containerport}
-                    - metricsportname: ${schema.spec.name}
     - id: service
       template:
         apiVersion: v1
