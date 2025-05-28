@@ -6,7 +6,7 @@ spec:
   # Keep the schema as is
   schema:
     apiVersion: v1alpha1
-    kind: Application
+    kind: Frontapplication
     spec:
       name: string
       image: string | default="nginx"
