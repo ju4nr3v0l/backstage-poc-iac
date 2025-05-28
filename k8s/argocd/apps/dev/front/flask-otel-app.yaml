@@ -1,5 +1,5 @@
 apiVersion: kro.run/v1alpha1
-kind: Application # Tipo de Custom Resource
+kind: frontapplication # Tipo de Custom Resource
 metadata:
   name: flask-otel-app # Nombre único del CR
 spec:
