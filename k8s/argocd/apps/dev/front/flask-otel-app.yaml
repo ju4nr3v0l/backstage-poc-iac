@@ -2,7 +2,6 @@ apiVersion: kro.run/v1alpha1
 kind: frontapplication # Tipo de Custom Resource
 metadata:
   name: flask-otel-app # Nombre único del CR
-  namespace: dev
 spec:
   name: flask-otel-app # Prefijo usado en Deployment y Service
   image: juanmarulanda/flask-otel-app:latest # Imagen de Docker Hub
