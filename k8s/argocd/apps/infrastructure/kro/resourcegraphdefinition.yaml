@@ -7,6 +7,7 @@ spec:
   schema:
     apiVersion: v1alpha1
     kind: Application
+    group: kro.run
     spec:
       name: string
       image: string | default="nginx"
@@ -66,7 +67,7 @@ spec:
     # Simplified HPA resource definition
     - id: hpa
       includeWhen:
-        - ${default(false, schema.spec.autoscaling.enabled)}
+        - ${schema.spec.autoscaling.enabled}
       template:
         apiVersion: autoscaling/v2
         kind: HorizontalPodAutoscaler
@@ -78,15 +79,15 @@ spec:
             apiVersion: apps/v1
             kind: Deployment
             name: ${deployment.metadata.name}
-          minReplicas: ${default(1, schema.spec.autoscaling.minReplicas)}
-          maxReplicas: ${default(5, schema.spec.autoscaling.maxReplicas)}
+          minReplicas: ${schema.spec.autoscaling.minReplicas}
+          maxReplicas: ${schema.spec.autoscaling.maxReplicas}
           metrics:
             - type: Resource
               resource:
                 name: cpu
                 target:
                   type: Utilization
-                  averageUtilization: ${default(80, schema.spec.autoscaling.cpu)}
+                  averageUtilization: ${schema.spec.autoscaling.cpu}
 
     # Simplified ScaledObject resource definition
 #    - id: scaledobject
