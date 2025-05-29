@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: flask-otel-app-2-monitor
+  namespace: dev
+  labels:
+    app: flask-otel-app-2
+spec:
+  selector:
+    matchLabels:
+      app: flask-otel-app-2
+  endpoints:
+  - port: metrics
+    interval: 15s
+    path: /metrics

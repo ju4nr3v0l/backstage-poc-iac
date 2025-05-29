@@ -1,0 +1,16 @@
+apiVersion: kro.run/v1alpha1
+kind: Application
+metadata:
+  name: flask-otel-app-2
+  namespace: dev
+spec:
+  name: flask-otel-app-2
+  image: juanmarulanda/flask-otel-app:latest
+  namespace: dev
+  containerport: 5000
+  service:
+    enabled: true
+    serviceport: 5000
+    protocol: TCP
+  autoscaling:
+    enabled: false

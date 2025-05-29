@@ -1,0 +1,26 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: flask-otel-app-2-scaler
+  namespace: dev
+spec:
+  scaleTargetRef:
+    name: flask-otel-app-2
+    kind: Deployment
+  minReplicaCount: 1
+  maxReplicaCount: 5
+  pollingInterval: 15
+  cooldownPeriod: 30
+  triggers:
+  - type: prometheus
+    metadata:
+      serverAddress: http://metrics-stack-prometheus.monitoring.svc.cluster.local:9090
+      metricName: http_server_active_requests
+      threshold: '3'
+      query: sum(http_server_active_requests{pod=~"flask-otel-app-2.*"})
+  - type: prometheus
+    metadata:
+      serverAddress: http://metrics-stack-prometheus.monitoring.svc.cluster.local:9090
+      metricName: http_request_rate
+      threshold: '10'
+      query: sum(rate(http_requests_total{pod=~"flask-otel-app-2.*"}[1m]))
