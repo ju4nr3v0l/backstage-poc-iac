@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-dashboards
+  namespace: argocd
+spec:
+  project: infrastructure
+  source:
+    repoURL: git@github.com:ju4nr3v0l/backstage-poc-iac.git
+    targetRevision: main
+    path: k8s/argocd/apps/monitoring/dashboards
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

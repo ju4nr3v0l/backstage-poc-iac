@@ -5,7 +5,6 @@ resources:
   - flask-otel-app.yaml
   - service-monitor.yaml
   - service-patch.yaml
-  - grafana-dashboard-cm.yaml
   - keda-scaledobject.yaml
 
 namespace: dev
