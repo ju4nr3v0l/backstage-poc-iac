@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - app.yaml
   - front
+  - flask-app-2
