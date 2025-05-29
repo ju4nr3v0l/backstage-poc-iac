@@ -125,3 +125,56 @@ aplicaciones. La implementación de esta infraestructura representa un cambio si
 eficiente y escalable.
 
 Recomendamos proceder con la implementación completa de esta arquitectura para obtener todos los beneficios demostrados en el POC.
+
+
+````mermaid
+flowchart TD
+    subgraph "Infrastructure as Code"
+        IAC1[Define Cluster Infrastructure in Terraform/CloudFormation] --> IAC2[Version Control IaC in Git]
+        IAC2 --> IAC3[CI/CD Pipeline for Infrastructure]
+        IAC3 --> IAC4[Provision Kubernetes Cluster]
+        IAC4 --> IAC5[Install Core Components]
+        IAC5 --> IAC6[Configure Karpenter Node Provisioners]
+    end
+
+    subgraph "Development Phase"
+        A[Developer Creates Application Code] --> B[Add OpenTelemetry Instrumentation]
+        B --> C[Create Docker Image]
+        C --> D[Push Image to Registry]
+    end
+    
+    subgraph "GitOps Configuration"
+        E[Create KRO Application YAML] --> F[Define Service Monitor for Prometheus]
+        F --> G[Create Grafana Dashboard ConfigMap]
+        G --> H[Create KEDA ScaledObject]
+        H --> I[Update Kustomization.yaml]
+        I --> J[Commit & Push to Git Repository]
+    end
+    
+    subgraph "Deployment Phase"
+        J --> K[ArgoCD Detects Changes]
+        K --> L[ArgoCD Syncs Application]
+        L --> M[KRO Creates Kubernetes Resources]
+        M --> N[Deployment & Service Created]
+        N --> O[Prometheus Discovers ServiceMonitor]
+        O --> P[Grafana Loads Dashboard]
+        N --> Q[KEDA Creates HPA]
+        Q --> R[Application Scales Based on Metrics]
+    end
+    
+    subgraph "Pod & Node Autoscaling"
+        S[Application Generates Metrics] --> T[Prometheus Collects Metrics]
+        T --> U[Grafana Displays Metrics]
+        T --> V[KEDA Evaluates Scaling Conditions]
+        V --> W[HPA Scales Deployment]
+        W --> X[Increased Pod Demand]
+        X --> Y[Karpenter Detects Resource Needs]
+        Y --> Z[Karpenter Provisions New Nodes]
+        Z --> AA[Pods Scheduled on New Nodes]
+    end
+    
+    IAC6 --> A
+    IAC6 --> E
+    N --> S
+
+````
