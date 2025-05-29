@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: flask-otel-app-monitor
+  namespace: dev
+  labels:
+    release: prometheus-stack  # Updated to match Prometheus serviceMonitorSelector
+spec:
+  selector:
+    matchLabels:
+      app: flask-otel-app  # Match the labels of your service
+  endpoints:
+  - port: http  # The name of the port in your service
+    path: /metrics
+    interval: 15s
+  namespaceSelector:
+    matchNames:
+    - dev

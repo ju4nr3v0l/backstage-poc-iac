@@ -3,8 +3,11 @@ kind: Kustomization
 
 resources:
   - flask-otel-app.yaml
+  - service-monitor.yaml
+  - service-patch.yaml
+  - grafana-dashboard-cm.yaml
 
-namespace: argocd
+namespace: dev
 
 labels:
   - pairs:

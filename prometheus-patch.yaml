@@ -1,0 +1,5 @@
+spec:
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector:
+    matchLabels:
+      release: prometheus-stack

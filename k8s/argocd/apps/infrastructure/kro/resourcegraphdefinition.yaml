@@ -57,12 +57,15 @@ spec:
         metadata:
           name: ${schema.spec.name}-service
           namespace: ${schema.spec.namespace}
+          labels:
+            app: ${schema.spec.name}
         spec:
           selector: ${deployment.spec.selector.matchLabels}
           ports:
             - protocol: ${schema.spec.service.protocol}
               port: ${schema.spec.service.serviceport}
               targetPort: ${schema.spec.containerport}
+              name: http
 
     # Simplified HPA resource definition
     - id: hpa
